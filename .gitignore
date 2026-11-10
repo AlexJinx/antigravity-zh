@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.asar
+*.asar.*
+antigravity-zh-state.json

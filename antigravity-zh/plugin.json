@@ -1,0 +1,11 @@
+{
+  "name": "antigravity-zh",
+  "displayName": "Antigravity 简体中文",
+  "version": "2.30.0",
+  "description": "界面汉化与恢复工具，适配 Windows Antigravity 2.30.0。扩展常规、应用、外观、快捷键、通知和浏览器设置翻译。",
+  "suggestedPrompts": [
+    "使用 zh-interface 检查我的 Antigravity 汉化状态",
+    "使用 zh-interface 打开汉化安装工具",
+    "使用 zh-interface 打开恢复英文工具"
+  ]
+}
