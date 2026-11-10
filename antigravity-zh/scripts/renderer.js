@@ -294,6 +294,7 @@
     "Reset Zoom": "重置缩放"
 });
   Object.assign(words, {
+    'Configure allowed and denied URLs for the browser subagent. It runs in the built-in browser, so no separate browser install is needed.': '配置浏览器子智能体允许和禁止访问的网址。它在内置浏览器中运行，无需另行安装浏览器。',
     'This Computer': '本机',
     'Remote': '远程',
     'Advanced': '高级',
