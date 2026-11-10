@@ -302,6 +302,57 @@
     'Controls permissions for remote conversations.': '控制远程对话的权限。',
     'Configure allowed and denied URLs for the browser subagent (invoked with /browser). Requires': '配置浏览器子智能体允许和禁止访问的网址（通过 /browser 调用）。需要'
   });
+  Object.assign(words, {
+    "Settings for conversations outside of projects.": "项目之外的对话设置。",
+    "No token data available.": "暂无词元用量数据。",
+    "Loading workspace customizations...": "正在加载工作区自定义配置……",
+    "Loading customizations...": "正在加载自定义配置……",
+    "The breakdown below shows token usage from customizations like rules, skills, and MCP. If a budget is exceeded, large rules are demoted to path pointers and large customizations are excluded automatically.": "下方展示规则、技能和 MCP 等自定义配置的词元用量。超出预算时，较大的规则会改为路径引用，较大的自定义配置会自动排除。",
+    "There are no customizations enabled.": "尚未启用自定义配置。",
+    "Skills": "技能",
+    "Rules": "规则",
+    "Other Customizations": "其他自定义配置",
+    "Manage project folders and settings.": "管理项目文件夹和设置。",
+    "Folders": "文件夹",
+    "Add Folder": "添加文件夹",
+    "Project": "项目",
+    "Danger Zone": "危险操作",
+    "Delete Project": "删除项目",
+    "Featured": "精选",
+    "Build with Google": "使用 Google 开发工具",
+    "Connect to Google Workspace, including Docs, Sheets, Slides, Drive, and Calendar.": "连接 Google Workspace，包括文档、表格、幻灯片、云端硬盘和日历。",
+    "Build on Google's developer platforms, including Android, Chrome, Gemini, and Google Cloud.": "使用 Google 的开发平台构建应用，包括 Android、Chrome、Gemini 和 Google Cloud。",
+    "Read, draft, and edit docs.": "阅读、起草和编辑文档。",
+    "Read, write, and format spreadsheets.": "读取、写入和设置电子表格格式。",
+    "Read, edit, and present presentations.": "阅读、编辑和演示幻灯片。",
+    "Read, edit, and export presentations.": "阅读、编辑和导出演示文稿。",
+    "Search, upload, download, and share files.": "搜索、上传、下载和共享文件。",
+    "Check availability, schedule events, and RSVP.": "查看空闲时间、安排日程并回复邀请。",
+    "Prototype, build & run modern apps that users love with Firebase's backend, AI, and operational infrastructure.": "借助 Firebase 的后端、AI 和运维基础设施，为用户设计原型、构建并运行现代应用。",
+    "Create with Prompt": "通过提示词创建",
+    "New": "新建",
+    "No automations yet": "尚无定时任务",
+    "Run a prompt on a schedule, like a morning summary of yesterday's changes. Runs show up here.": "按计划运行提示词，例如每天早晨总结昨日变化。运行记录将显示在这里。",
+    "Name": "名称",
+    "Untitled": "未命名",
+    "This computer": "本机",
+    "Uses your local files and tools. Schedules only.": "使用本机文件和工具，支持定时运行。",
+    "Trigger": "触发条件",
+    "Scheduled": "定时",
+    "Every day": "每天",
+    "Every week": "每周",
+    "Every month": "每月",
+    "Weekdays": "工作日",
+    "Instructions": "任务指令",
+    "Prompt": "提示词",
+    "How often": "运行频率",
+    "What should the agent do on each run? For example: summarize new bugs assigned to me and anything that changed overnight.": "每次运行时智能体应完成什么任务？例如，汇总分配给我的新缺陷及昨夜的变化。",
+    "Check for Updates": "检查更新",
+    "Create Project": "创建项目",
+    "Command Palette": "命令面板",
+    "Minimize": "最小化",
+    "Maximize": "最大化"
+});
   const excluded = 'script,style,textarea,input,pre,code,[contenteditable]:not([contenteditable="false"]),[role="log"],.markdown,.prose,[data-message-id]';
   const controls = 'button,label,nav,aside,h1,h2,h3,[role="button"],[role="menuitem"],[role="tab"],[role="dialog"],[role="navigation"],[role="menu"],[role="tooltip"]';
   function translate(text) {
@@ -320,11 +371,18 @@
         value = replacement + (words[suffix] || suffix);
       }
     }
+    const breakdown = trimmed.match(/^Show (\d+) breakdowns?$/);
+    if (breakdown) value = `显示 ${breakdown[1]} 项明细`;
+    const version = trimmed.match(/^Version (\d+\.\d+\.\d+)$/);
+    if (version) value = `版本 ${version[1]}`;
+    const deletion = trimmed.match(/^Permanently delete (.+) including (\d+) active conversations?\.$/);
+    if (deletion) value = `永久删除 ${deletion[1]}，包括其中 ${deletion[2]} 个活跃对话。`;
     const reset = trimmed.match(/^You have used some of your weekly limit, it will fully refresh in (\d+) days?, (\d+) hours?\.$/);
     if (reset) value = `已使用部分本周额度，将在 ${reset[1]} 天 ${reset[2]} 小时后完全重置。`;
     return value ? text.replace(text.trim(), value) : text;
   }
   function scan() {
+    const isConfigurationPage = /^\/(customizations|sidecars)(?:\/|$)/.test(window.location?.pathname || '');
     const settingsHeading = [...document.querySelectorAll('h1,h2,h3,div,span')].find(
       element => element.childElementCount === 0 &&
         ['Settings', '设置'].includes(element.textContent.trim()) &&
@@ -352,7 +410,17 @@
       if (!parent || parent.closest(excluded)) continue;
       const normalized = node.nodeValue.trim().replace(/\s+/g, ' ');
       const knownDescription = normalized.length > 30 && Object.hasOwn(words, normalized);
-      if (!parent.closest(controls) && !settingsPanel?.contains(parent) && !knownDescription) continue;
+      if (!parent.closest(controls) && !settingsPanel?.contains(parent) && !knownDescription && !isConfigurationPage) continue;
+      if (parent.childElementCount === 0 && parent.childNodes?.length > 1) {
+        const combined = parent.textContent;
+        const translated = translate(combined);
+        if (translated !== combined && [...parent.childNodes].every(child => child.nodeType === 3)) {
+          if (node === parent.firstChild) {
+            for (const child of parent.childNodes) pending.push([child, child === node ? translated : '']);
+          }
+          continue;
+        }
+      }
       let value = translate(node.nodeValue);
       if (parent.closest('h1,h2,h3')) {
         const greeting = normalized.match(/^(?:Hi |Hello, |Welcome back, |Good to see you, )(.+)\.$/);
