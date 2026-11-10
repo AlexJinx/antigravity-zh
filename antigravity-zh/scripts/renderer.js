@@ -293,6 +293,14 @@
     "Zoom Out": "缩小",
     "Reset Zoom": "重置缩放"
 });
+  Object.assign(words, {
+    'This Computer': '本机',
+    'Remote': '远程',
+    'Advanced': '高级',
+    'Configure what the agent can do in local and remote conversations.': '配置智能体在本地和远程对话中可以执行的操作。',
+    'Controls permissions for remote conversations.': '控制远程对话的权限。',
+    'Configure allowed and denied URLs for the browser subagent (invoked with /browser). Requires': '配置浏览器子智能体允许和禁止访问的网址（通过 /browser 调用）。需要'
+  });
   const excluded = 'script,style,textarea,input,pre,code,[contenteditable]:not([contenteditable="false"]),[role="log"],.markdown,.prose,[data-message-id]';
   const controls = 'button,label,nav,aside,h1,h2,h3,[role="button"],[role="menuitem"],[role="tab"],[role="dialog"],[role="navigation"],[role="menu"],[role="tooltip"]';
   function translate(text) {
