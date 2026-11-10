@@ -2,7 +2,7 @@
 
 为 Windows Antigravity 提供本地界面翻译、版本检查、备份和恢复功能。
 
-当前版本为 **2.30.0**，适配 **Antigravity 2.30.0**。工具版本与适配的 Antigravity 版本保持一致。同一版本内的翻译修订通过 Git 提交记录追踪。
+当前预览版为 **2.30.0**，适配 **Antigravity 2.30.0**。工具版本与适配的 Antigravity 版本保持一致。同一版本内的翻译修订通过 Git 提交记录追踪。
 
 ## 环境要求
 
@@ -14,7 +14,7 @@
 
 1. 下载仓库 ZIP 并完整解压。
 2. 双击 `install-plugin.cmd`，将插件安装至当前用户的 `.gemini/config/plugins/antigravity-zh`。
-3. 重启 Antigravity，在“自定义 → 已安装”中查看插件。
+3. 重启 Antigravity，在“自定义 → 已安装”（Customizations → Installed）中查找“Antigravity 简体中文”。
 4. 新建对话，输入“使用 zh-interface 打开汉化安装工具”。
 5. 工具窗口打开后，保存工作并完全退出 Antigravity。
 6. 点击“安装汉化”，完成后重新启动 Antigravity。
@@ -24,6 +24,8 @@
 ```powershell
 python antigravity-zh/scripts/tool.py gui
 ```
+
+也可以在对话中输入“使用 zh-interface 检查我的 Antigravity 汉化状态”进行检查，或输入“使用 zh-interface 打开恢复英文工具”打开恢复入口。
 
 插件注册和应用汉化分两步完成。汉化会修改本地 `app.asar`，并在同目录保存原始备份及哈希校验记录。
 
@@ -63,3 +65,7 @@ python antigravity-zh/scripts/tool.py restore
 `install_plugin.py` 负责插件文件安装。`tool.py` 校验版本、重建 ASAR、保存备份并恢复资源。`bridge.js` 向应用主界面加载 `renderer.js`，后者使用本地翻译表处理界面文字和动态提示。
 
 仓库包含汉化工具源码。使用者需自行安装对应版本的 Antigravity。
+
+## 参考资料
+
+插件格式参考了官方插件文档及本机安装的 Firebase 插件。安装器已在临时目录完成测试。[Antigravity 插件文档](https://antigravity.google/docs/plugins)
